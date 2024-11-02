@@ -1,20 +1,24 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   books: [],
-}
+  book: null,
+};
 
 export const BookSlice = createSlice({
-  name: 'Book',
+  name: "Book",
   initialState,
   reducers: {
-    load:(state,action)=>{
-        state.books = action.payload
-    }
+    load: (state, action) => {
+      state.books = action.payload;
+    },
+    loadBook: (state, action) => {
+      state.book = action.payload;
+    },
   },
-})
+});
 
 // Action creators are generated for each case reducer function
-export const {load} = BookSlice.actions
+export const { load , loadBook } = BookSlice.actions;
 
-export default BookSlice.reducer
+export default BookSlice.reducer;

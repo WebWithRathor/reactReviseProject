@@ -1,15 +1,48 @@
-import React from 'react'
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { loadSingleBook } from "../../store/actions/BookAction";
 
 const DetailLayout = () => {
-  return (
-    <div className='px-20 pt-10'>
-        <div className="img-wrap w-full h-96 ">
-        <img className='w-full h-full object-cover' src="https://images.unsplash.com/photo-1584608168573-b6eec7a04fd7?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" />
-        </div>
-        <h1 className='text-4xl font-bold mt-4'>Heading</h1>
-        <p className='mt-3'>This is a detail layout. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Assumenda nemo laboriosam quas. Consequatur, doloremque a maxime asperiores nam modi laudantium ab aliquam. Nesciunt ratione, accusamus earum quisquam illo magnam aspernatur!</p>
-    </div>
-  )
-}
+  const { id } = useLocation().state;
+  const dispatch = useDispatch();
+  const { book } = useSelector((store) => store.BookSlice);
+  console.log(book);
 
-export default DetailLayout
+  useEffect(() => {
+    dispatch(loadSingleBook(id));
+  }, []);
+
+  return (
+    book && (
+      <div className="px-20 pt-20 pb-10 flex">
+        <div className="img-wrap w-full h-96 ">
+          <img
+            className="w-max h-full object-contain"
+            src={book.volumeInfo.imageLinks.thumbnail}
+            alt=""
+          />
+        </div>
+        <div className="w-max">
+
+        <h1 className="text-4xl font-bold mt-4" >{book.volumeInfo.title}</h1>
+        <h1 className="text-lg mt-3"><strong>Publisher</strong> : {book.volumeInfo.publisher}</h1>
+        <p className="mt-3 " dangerouslySetInnerHTML={{__html: book.volumeInfo.description}}>
+        </p>
+        <a target="_blank" href={book.volumeInfo.previewLink}>
+        <button className="px-4 py-2 bg-blue-500 rounded mt-3 text-white font-semibold">More Information</button>
+        </a>
+        {book.accessInfo.pdf && book.accessInfo.pdf.isAvailable && (
+        <a href={book.accessInfo.pdf.acsTokenLink} download>
+          <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+            Download PDF
+          </button>
+        </a>
+      )}
+        </div>
+      </div>
+    )
+  );
+};
+
+export default DetailLayout;
